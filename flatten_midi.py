@@ -8,13 +8,13 @@ parser = argparse.ArgumentParser(
     description="Flatten MIDI files by adding pedal notes."
 )
 parser.add_argument(
-    "input_midi_path",
+    "--input_dir",
     type=str,
     default="./midi_files",
     help="Path to the input MIDI files directory.",
 )
 parser.add_argument(
-    "output_midi_path",
+    "--output_dir",
     type=str,
     default="./midi_files_flattened",
     help="Path to the output flattened MIDI files directory.",
