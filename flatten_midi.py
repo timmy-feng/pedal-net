@@ -35,8 +35,8 @@ pedal_buckets = [
 pedal_bucket_notes = [69, 71, 72, 74, 76, 77, 79, 81]
 pedal_instrument = 56  # trumpet
 
-input_midi_path = args.input_midi_path
-output_midi_path = args.output_midi_path
+input_midi_path = args.input_dir
+output_midi_path = args.output_dir
 
 
 def flatten_midi(input_path, output_path):
