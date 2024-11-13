@@ -1,14 +1,42 @@
 from mido import MidiFile, MidiTrack, Message
 import os
+import argparse
 
 CC_PEDAL = 64
 
-pedal_buckets = [(0, 15), (16, 31), (32, 47), (48, 63), (64, 79), (80, 95), (96, 111), (112, 127)]
+parser = argparse.ArgumentParser(
+    description="Flatten MIDI files by adding pedal notes."
+)
+parser.add_argument(
+    "input_midi_path",
+    type=str,
+    default="./midi_files",
+    help="Path to the input MIDI files directory.",
+)
+parser.add_argument(
+    "output_midi_path",
+    type=str,
+    default="./midi_files_flattened",
+    help="Path to the output flattened MIDI files directory.",
+)
+args = parser.parse_args()
+
+pedal_buckets = [
+    (0, 15),
+    (16, 31),
+    (32, 47),
+    (48, 63),
+    (64, 79),
+    (80, 95),
+    (96, 111),
+    (112, 127),
+]
+
 pedal_bucket_notes = [69, 71, 72, 74, 76, 77, 79, 81]
 pedal_instrument = 56  # trumpet
 
-input_midi_path = "./midi_files/"
-output_midi_path = "./midi_files_flattened/"
+input_midi_path = args.input_midi_path
+output_midi_path = args.output_midi_path
 
 
 def flatten_midi(input_path, output_path):
