@@ -7,6 +7,7 @@ CC_PEDAL = 64
 
 pedal_bucket_notes = [69, 71, 72, 74, 76, 77, 79, 81]
 pedal_instrument = 56  # trumpet
+pedal_channel = 1 # channel 0 is used for piano
 
 parser = argparse.ArgumentParser(
     description="Flatten MIDI files by adding pedal notes."
@@ -50,7 +51,7 @@ def flatten_midi(input_path, output_path):
         Message(
             "program_change",
             program=pedal_instrument,
-            channel=0,
+            channel=pedal_channel,
             time=0,
         )
     )
@@ -73,7 +74,7 @@ def flatten_midi(input_path, output_path):
                 pedal_track.append(
                     Message(
                         "note_off",
-                        channel=0,
+                        channel=pedal_channel,
                         note=pedal_bucket_notes[prev_pedal_bucket],
                         velocity=64,
                         time=track_time - prev_pedal_time,
@@ -82,7 +83,7 @@ def flatten_midi(input_path, output_path):
                 pedal_track.append(
                     Message(
                         "note_on",
-                        channel=0,
+                        channel=pedal_channel,
                         note=pedal_bucket_notes[pedal_bucket],
                         velocity=64,
                         time=0,
@@ -92,7 +93,7 @@ def flatten_midi(input_path, output_path):
                 pedal_track.append(
                     Message(
                         "note_on",
-                        channel=0,
+                        channel=pedal_channel,
                         note=pedal_bucket_notes[pedal_bucket],
                         velocity=64,
                         time=track_time,
