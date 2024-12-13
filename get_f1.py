@@ -12,31 +12,37 @@ def get_f1(ground_truth_path, prediction_path):
     prediction_69 = create_note_sequence(prediction_path, 69)
 
     if len(ground_truth_69) != len(prediction_69):
-        print("ERROR:  predicted different amount of ticks for bucket 69")
         if len(prediction_69) < len(ground_truth_69):
-            prediction_69 += [0] * (len(ground_truth_69) - len(prediction_69))
+            ground_truth_69 = ground_truth_69[: len(prediction_69)]
         elif len(prediction_69) > len(ground_truth_69):
-            prediction_69 = prediction_69[: len(ground_truth_69)]
+            ground_truth_69 += [0] * (len(prediction_69) - len(ground_truth_69))
+            print("ERROR:  predicted more amount of ticks for bucket 69 than ground truth")
+            print("actual len:",len(ground_truth_69))
+            print("predicted len:",len(prediction_69))
 
     ground_truth_71 = create_note_sequence(ground_truth_path, 71)
     prediction_71 = create_note_sequence(prediction_path, 71)
 
     if len(ground_truth_71) != len(prediction_71):
-        print("ERROR:  predicted different amount of ticks for bucket 71")
         if len(prediction_71) < len(ground_truth_71):
-            prediction_71 += [0] * (len(ground_truth_71) - len(prediction_71))
+            ground_truth_71 = ground_truth_71[: len(prediction_71)]
         elif len(prediction_71) > len(ground_truth_71):
-            prediction_71 = prediction_71[: len(ground_truth_71)]
+            ground_truth_71 += [0] * (len(prediction_71) - len(ground_truth_71))
+            print("ERROR:  predicted more amount of ticks for bucket 71 than ground truth")
+            print("actual len:",len(ground_truth_71))
+            print("predicted len:",len(prediction_71))
 
     ground_truth_72 = create_note_sequence(ground_truth_path, 72)
     prediction_72 = create_note_sequence(prediction_path, 72)
 
     if len(ground_truth_72) != len(prediction_72):
-        print("ERROR:  predicted different amount of ticks for bucket 72")
         if len(prediction_72) < len(ground_truth_72):
-            prediction_72 += [0] * (len(ground_truth_72) - len(prediction_72))
+            ground_truth_72 = ground_truth_72[: len(prediction_72)]
         elif len(prediction_72) > len(ground_truth_72):
-            prediction_72 = prediction_72[: len(ground_truth_72)]
+            ground_truth_72 += [0] * (len(prediction_72) - len(ground_truth_72))
+            print("ERROR:  predicted more amount of ticks for bucket 72 than ground truth")
+            print("actual len:",len(ground_truth_72))
+            print("predicted len:",len(prediction_72))
 
     scores = (
         f1_score(ground_truth_69, prediction_69),
@@ -88,12 +94,6 @@ def create_note_sequence(midi_file_path, target_note):
     # Create a time sequence array initialized to 0
     note_sequence = [0] * int(total_ticks)
 
-    # Iterate through tracks to find bagpipe track and note events
-    for i, track in enumerate(midi.tracks):
-        print(f"Track {i}: {track.name}, Length: {len(track)} messages")
-        for msg in track[:10]:  # Adjust the range as needed
-            print(msg)
-
     track = midi.tracks[-1]
     current_tick = 0
     note_active = False  # Tracks whether the target note is currently held
@@ -114,20 +114,50 @@ def create_note_sequence(midi_file_path, target_note):
             ):
                 if msg.note == target_note:
                     note_active = False
-        elif msg.type == "end_of_track":
-            current_tick += msg.time
-            return note_sequence[:current_tick]
-
+        # elif msg.type == "end_of_track":
+        #     current_tick += msg.time
+        #     return note_sequence[:current_tick]
+    
     return note_sequence
 
+def are_midi_files_same_len_in_ticks(path1, path2):
+    """
+    Compare the length of two MIDI files in ticks.
+
+    Parameters:
+        path1 (str): Path to the first MIDI file.
+        path2 (str): Path to the second MIDI file.
+
+    Returns:
+        bool: True if the files have the same length in ticks, False otherwise.
+    """
+    midi1 = MidiFile(path1)
+    midi2 = MidiFile(path2)
+
+    # Calculate the total ticks for each MIDI file
+    total_ticks1 = sum(
+        msg.time for track in midi1.tracks for msg in track if not msg.is_meta
+    )
+    total_ticks2 = sum(
+        msg.time for track in midi2.tracks for msg in track if not msg.is_meta
+    )
+
+    # Compare the total ticks
+    is_same_len = total_ticks1 == total_ticks2
+    if not is_same_len:
+        print("len of 1:", total_ticks1)
+        print("len of 2:", total_ticks2)
+    else:
+        print('len of both:', total_ticks1)
+    return is_same_len
 
 # Example unit test
-midi_file_path = "midi_files_flattened/star_wars_by_han_ar_single_z0_full.midi"  # Replace with your MIDI file path
-# target_note = 71  # Replace with the MIDI note number for the specific note
+# midi_file_path = "midi_files_flattened/star_wars_by_han_ar_single_z0_full.midi"  # Replace with your MIDI file path
+# # target_note = 71  # Replace with the MIDI note number for the specific note
 
-# sequence = (create_note_sequence(midi_file_path, target_note))[400:1000]
-# print(sequence)
+# # sequence = (create_note_sequence(midi_file_path, target_note))[400:1000]
+# # print(sequence)
 
-# Integration Test
-naive_f1s = get_f1_naive(midi_file_path)
-print(naive_f1s)
+# # Integration Test
+# naive_f1s = get_f1_naive(midi_file_path)
+# print(naive_f1s)
