@@ -53,21 +53,53 @@ def get_f1(ground_truth_path, prediction_path):
     return scores
 
 
-def get_f1_naive(prediction_path):
+def get_f1_naive(ground_truth_path, prediction_path):
     midi = MidiFile(prediction_path)
 
+    ground_truth_69 = create_note_sequence(ground_truth_path, 69)
     prediction_69 = create_note_sequence(prediction_path, 69)
+
+    if len(ground_truth_69) != len(prediction_69):
+        if len(prediction_69) < len(ground_truth_69):
+            ground_truth_69 = ground_truth_69[: len(prediction_69)]
+        elif len(prediction_69) > len(ground_truth_69):
+            ground_truth_69 += [0] * (len(prediction_69) - len(ground_truth_69))
+            print("ERROR:  predicted more amount of ticks for bucket 69 than ground truth")
+            print("actual len:",len(ground_truth_69))
+            print("predicted len:",len(prediction_69))
+
+    ground_truth_71 = create_note_sequence(ground_truth_path, 71)
     prediction_71 = create_note_sequence(prediction_path, 71)
+
+    if len(ground_truth_71) != len(prediction_71):
+        if len(prediction_71) < len(ground_truth_71):
+            ground_truth_71 = ground_truth_71[: len(prediction_71)]
+        elif len(prediction_71) > len(ground_truth_71):
+            ground_truth_71 += [0] * (len(prediction_71) - len(ground_truth_71))
+            print("ERROR:  predicted more amount of ticks for bucket 71 than ground truth")
+            print("actual len:",len(ground_truth_71))
+            print("predicted len:",len(prediction_71))
+
+    ground_truth_72 = create_note_sequence(ground_truth_path, 72)
     prediction_72 = create_note_sequence(prediction_path, 72)
+
+    if len(ground_truth_72) != len(prediction_72):
+        if len(prediction_72) < len(ground_truth_72):
+            ground_truth_72 = ground_truth_72[: len(prediction_72)]
+        elif len(prediction_72) > len(ground_truth_72):
+            ground_truth_72 += [0] * (len(prediction_72) - len(ground_truth_72))
+            print("ERROR:  predicted more amount of ticks for bucket 72 than ground truth")
+            print("actual len:",len(ground_truth_72))
+            print("predicted len:",len(prediction_72))
 
     naive_69 = np.ones_like(prediction_69)
     naive_71 = np.ones_like(prediction_71)
     naive_72 = np.ones_like(prediction_72)
 
     scores = (
-        f1_score(naive_69, prediction_69),
-        f1_score(naive_71, prediction_71),
-        f1_score(naive_72, prediction_72),
+        f1_score(ground_truth_69, naive_69),
+        f1_score(ground_truth_71, naive_71),
+        f1_score(ground_truth_72, naive_72),
     )
 
     return scores

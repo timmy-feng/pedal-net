@@ -24,7 +24,7 @@ with open('f1_scores.csv', mode='a', newline='') as file:
                 ground = ground_truth_path+'/'+file
                 predicted = prediction_path+'/'+file
 
-                naive_f1 = get_f1_naive(predicted)
+                naive_f1 = get_f1_naive(ground, predicted)
                 print('naive:',naive_f1)
 
                 ground_f1 = get_f1(ground, predicted)
